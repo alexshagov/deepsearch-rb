@@ -1,0 +1,11 @@
+source 'https://rubygems.org'
+
+gem 'sinatra', '~> 3.0'
+gem 'sinatra-websocket'
+gem 'thin'
+
+# For development, provides auto-reloading
+gem 'sinatra-reloader'
+
+# Use the local deepsearch gem from the parent directory
+gem 'deepsearch-rb', path: '../../'

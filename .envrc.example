@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Use the Nix development shell from flake.nix
+use flake
+
+# Environment variables for development
+# Uncomment and set as needed:
+# export TAVILY_API_KEY="your_api_key_here"
+
+# Check if Gemfile exists and install dependencies
+GEMFILE_HASH=".gems/.gemfile.hash"
+NEW_HASH=""
+if [ -f "Gemfile" ]; then
+    NEW_HASH=$(shasum -a 256 Gemfile)
+fi
+
+if [ -f "Gemfile" ]; then
+    if [ ! -f "$GEMFILE_HASH" ] || [ "$NEW_HASH" != "$(cat $GEMFILE_HASH)" ]; then
+        echo "Gemfile has changed or gems not installed. Installing dependencies..."
+        bundle install
+        echo "$NEW_HASH" > "$GEMFILE_HASH"
+    fi
+fi
+
+# Print environment info
+echo "DeepSearch Ruby development environment loaded"
+echo "Ruby version: $(ruby --version)"
+echo "Bundler version: $(bundle --version)"
+echo "Gem home: $GEM_HOME"

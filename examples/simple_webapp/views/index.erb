@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>deepsearch-rb demo</title>
+  <link rel="stylesheet" href="index.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><span class="logo">deepsearch-rb</span> demo </h1>
+      <div class="connection-status">
+        <div class="connection-dot" id="connection-status"></div>
+        <span id="connection-text">Disconnected</span>
+      </div>
+    </header>
+    
+    <form id="search-form">
+      <input type="text" id="query" placeholder="Search for anything (e.g., 'Recent developments in AI', 'Open source LLM benchmarks')" required autocomplete="off">
+      <button type="submit">Search</button>
+    </form>
+    
+    <div class="panel" id="events-panel">
+      <div class="panel-header events-summary" id="events-summary">
+        <div>
+          <span>Live Events </span>
+          <span class="badge" id="event-count">0 events</span>
+        </div>
+        <span class="events-toggle-icon">▼</span>
+      </div>
+      <div class="panel-body events-dropdown" id="events-dropdown">
+        <div id="events"></div>
+        <div class="empty-state" id="events-empty">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+          <h3>No activity yet</h3>
+          <p>Perform a search to see real-time events and processing steps</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel result-panel">
+      <div class="panel-header">
+        <span>Search Results</span>
+      </div>
+      <div class="panel-body" id="result-container">
+        <div id="result">
+          <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+            <h3>No results yet</h3>
+            <p>Your search results will appear here when ready</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    const form = document.getElementById('search-form');
+    const queryInput = document.getElementById('query');
+    const eventsDiv = document.getElementById('events');
+    const resultDiv = document.getElementById('result');
+    const submitBtn = form.querySelector('button');
+    const connectionStatus = document.getElementById('connection-status');
+    const connectionText = document.getElementById('connection-text');
+    const eventCount = document.getElementById('event-count');
+
+    const eventsPanel = document.getElementById('events-panel');
+    const eventsSummary = document.getElementById('events-summary');
+    const eventsDropdown = document.getElementById('events-dropdown');
+    const eventsEmpty = document.getElementById('events-empty');
+    const resultEmptyState = resultDiv.innerHTML;
+    let ws;
+    let eventCounter = 0;
+
+    function updateConnectionStatus(connected) {
+      if (connected) {
+        connectionStatus.className = 'connection-dot connected';
+        connectionText.textContent = 'Connected';
+      } else {
+        connectionStatus.className = 'connection-dot';
+        connectionText.textContent = 'Disconnected';
+      }
+    }
+
+    function updateEventCount() {
+      eventCount.textContent = `${eventCounter} ${eventCounter === 1 ? 'event' : 'events'}`;
+      if (eventCounter > 0) {
+        eventsEmpty.style.display = 'none';
+      } else {
+        eventsEmpty.style.display = 'flex';
+      }
+    }
+
+    function connectAndSearch() {
+      const query = queryInput.value.trim();
+      if (!query) return;
+
+      eventsDiv.innerHTML = '';
+      resultDiv.innerHTML = resultEmptyState;
+      eventCounter = 0;
+      updateEventCount();
+      
+      addEvent('Starting new search session...', 'status');
+      submitBtn.disabled = true;
+      queryInput.disabled = true;
+      resultDiv.classList.remove('error', 'result-markdown');
+
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+
+      ws.onopen = () => {
+        updateConnectionStatus(true);
+        addEvent('WebSocket connection established', 'status');
+        addEvent(`Sending query: "${query}"`, 'status');
+        ws.send(JSON.stringify({ query: query }));
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket Error:', error);
+        addEvent(`Connection error: ${error.message || 'Unknown error'}`, 'error');
+        updateConnectionStatus(false);
+      };     
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === 'final_result') {
+            addEvent('Search completed successfully', 'status');
+            addEvent('Rendering final results...', 'step');
+            resultDiv.innerHTML = marked.parse(data.summary);
+            resultDiv.classList.add('result-markdown');
+          } else if (data.type === 'error' || data.error) {
+            addEvent(data.message || data.error, 'error');
+            resultDiv.innerHTML = '<div class="empty-state"><h3>Search Error</h3><p>An error occurred during the search. Check the events panel for details.</p></div>';
+            resultDiv.classList.add('error');
+          } else {
+            addEvent(data.details, data.step || 'status');
+          }
+        } catch (e) {
+          addEvent(`Failed to parse message: ${e.message}`, 'error');
+        }
+      };
+
+      ws.onclose = (event) => {
+        console.log('WebSocket closed:', event);
+        addEvent(`Connection closed: ${event.reason || 'No reason provided'}`, 'status');
+        updateConnectionStatus(false);
+        submitBtn.disabled = false;
+        queryInput.disabled = false;
+      };
+    }
+
+    function addEvent(text, type = 'status') {
+      eventCounter++;
+      updateEventCount();
+      
+      const eventElement = document.createElement('div');
+      eventElement.className = `event-item ${type}`;
+      
+      const timestamp = new Date().toLocaleTimeString();
+      
+      eventElement.innerHTML = `
+        <div class="event-content">
+          <span class="badge badge-${type}">${type}</span>
+          <span class="event-text">${text}</span>
+        </div>
+        <span class="event-timestamp">${timestamp}</span>
+      `;
+      
+      eventsDiv.appendChild(eventElement);
+      eventsDropdown.scrollTop = eventsDropdown.scrollHeight;
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.close();
+      }
+      connectAndSearch();
+    });
+
+    eventsSummary.addEventListener('click', () => {
+      eventsPanel.classList.toggle('is-open');
+      eventsDropdown.classList.toggle('is-open');
+    });
+
+    // Focus the search input on page load
+    queryInput.focus();
+  </script>
+</body>
+</html>
