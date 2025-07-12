@@ -24,6 +24,8 @@ Deepsearch.search(initial search) ->
 
 ## Installation
 
+[![Ruby](https://github.com/alexshagov/deepsearch-rb/actions/workflows/ruby.yml/badge.svg)](https://github.com/alexshagov/deepsearch-rb/actions/workflows/ruby.yml)
+
 ### Quick installation via nix flakes
 
 If you're using nix flakes, just run `nix develop` and you'll enter a fully prepared dev environment.
