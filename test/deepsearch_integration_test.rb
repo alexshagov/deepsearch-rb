@@ -96,11 +96,12 @@ class DeepsearchIntegrationTest < Minitest::Test
     end
 
     # Act
+    result = nil
     RubyLLM.stub :chat, mock_llm_chat do
       RubyLLM.stub :embed, embed_stub do
         Deepsearch::SearchAdapters::TavilyAdapter.stub :new, ->(*) { mock_search_adapter } do
           Net::HTTP.stub :new, http_new_stub do
-            Deepsearch.search(@query)
+            result = Deepsearch.search(@query)
           end
         end
       end
@@ -114,5 +115,9 @@ class DeepsearchIntegrationTest < Minitest::Test
     mock_http_response1.verify
     mock_http2.verify
     mock_http_response2.verify
+
+
+    assert result.success?
+    assert_equal "Final summary about RoR. [1](https://rubyonrails.org)", result.summary
   end
 end
