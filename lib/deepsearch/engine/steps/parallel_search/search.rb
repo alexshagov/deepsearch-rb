@@ -78,7 +78,7 @@ module Deepsearch
               sleep(sleep_duration)
             end
 
-            @logger.error("✗ Task #{query_number} failed permanently for '#{query}' after #{MAX_RETRIES} retries.")
+            @logger.debug("✗ Task #{query_number} failed permanently for '#{query}' after #{MAX_RETRIES} retries.")
             []
           end
 

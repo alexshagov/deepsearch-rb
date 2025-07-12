@@ -6,10 +6,21 @@ The only runtime dependencies are [ruby_llm](https://github.com/crmne/ruby_llm?t
 ![single cycle diagram](docs/high-level-diagram.png)
 
 <details>
-<summary>Demo (simple 1 cycle search) (`examples/simple_webapp`) ▶️</summary>
+<summary>🎥 A simple demo within a sinatra app demonstrating the basic 1-cycle flow. (`examples/simple_webapp`) ▶️</summary>
 
 ![demo](docs/sinatra-app-demo.gif)
 </details>
+
+---
+
+**NOTE**: You can implement your own chains in the way it works for you, BFS/DFS search on any topic. A draft code might look like: 
+
+```
+Deepsearch.search(initial search) -> 
+  LLM(Generate additional queries) ->
+    Async [for each additional query]{ Deepsearch.search(sub-query) } ->
+      Aggregate()
+```
 
 ## Installation
 
