@@ -28,7 +28,7 @@ Deepsearch.search(initial search) ->
 
 If you're using nix flakes, just run `nix develop` and you'll enter a fully prepared dev environment.
 
-Otherwise, make sure you have installed `required_ruby_version` = ">= 3.0.0".
+Otherwise, make sure you have installed `required_ruby_version` = ">= 3.2.0".
 
 ```ruby
 # Gemfile

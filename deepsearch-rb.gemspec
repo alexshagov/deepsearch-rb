@@ -12,17 +12,14 @@ Gem::Specification.new do |spec|
   spec.description = "A ruby gem for performing LLM-powered automated web search."
   spec.homepage = "https://github.com/alexshagov/deepsearch-rb"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.0.0"
+  spec.required_ruby_version = ">= 3.2.0"
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/alexandershagov/deepsearch-rb"
-  spec.metadata["changelog_uri"] = "https://github.com/alexandershagov/deepsearch-rb/blob/main/CHANGELOG.md"
+  spec.metadata["source_code_uri"] = "https://github.com/alexshagov/deepsearch-rb"
+  spec.metadata["changelog_uri"] = "https://github.com/alexshagov/deepsearch-rb/blob/main/CHANGELOG.md"
 
-  # Specify which files should be added to the gem when it is released.
-  spec.files = Dir["lib/**/*"] + ["deepsearch-rb.gemspec"]
-  spec.bindir = "exe"
-  spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
+  spec.files = Dir.glob("lib/**/*") + %w[README.md LICENSE.txt CHANGELOG.md]
   spec.require_paths = ["lib"]
 
   # Runtime dependencies
