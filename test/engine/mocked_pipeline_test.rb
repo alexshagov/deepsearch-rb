@@ -52,7 +52,7 @@ module Deepsearch
         end
 
         # Assert
-        assert_instance_of Steps::Summarization::Values::Result, final_result
+        assert_instance_of Steps::Summarization::Result, final_result
         assert final_result.success?
         assert_nil final_result.error
         assert_equal "This is the final summary.", final_result.summary
@@ -84,7 +84,6 @@ module Deepsearch
 
       private
 
-      # Helper to contain the nested stubs for cleaner tests.
       def with_pipeline_stubs(&block)
         Steps::PrepareSubqueries::Process.stub :new, ->(*) { @prepare_subqueries_mock } do
           Steps::ParallelSearch::Process.stub :new, ->(*) { @parallel_search_mock } do
@@ -97,7 +96,6 @@ module Deepsearch
         end
       end
 
-      # Verifies all mock interactions.
       def verify_mocks
         @prepare_subqueries_mock.verify
         @parallel_search_mock.verify
@@ -136,7 +134,7 @@ module Deepsearch
       end
 
       def build_summarization_result
-        Steps::Summarization::Values::Result.new(summary: "This is the final summary.", error: nil)
+        Steps::Summarization::Result.new(summary: "This is the final summary.", error: nil)
       end
     end
   end

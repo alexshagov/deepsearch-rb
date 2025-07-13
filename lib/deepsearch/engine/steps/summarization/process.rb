@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'values/result'
+require_relative 'result'
 
 module Deepsearch
   class Engine
@@ -18,17 +18,17 @@ module Deepsearch
           end
 
           def execute
-            return Values::Result.new(summary: "No relevant content found to summarize.") if relevant_chunks.empty?
+            return Result.new(summary: "No relevant content found to summarize.") if relevant_chunks.empty?
 
             prompt = build_summary_prompt
             Deepsearch.configuration.logger.debug("Summarizing content with LLM...")
             response = RubyLLM.chat.ask(prompt)
             Deepsearch.configuration.logger.debug("Summarization complete.")
 
-            Values::Result.new(summary: response.content)
+            Result.new(summary: response.content)
           rescue StandardError => e
             Deepsearch.configuration.logger.debug("Error during summarization: #{e.message}")
-            Values::Result.new(summary: nil, error: e.message)
+            Result.new(summary: nil, error: e.message)
           end
 
           private
