@@ -21,9 +21,9 @@ module Deepsearch
             successful_website = ParsedWebsite.allocate.tap { |p| p.instance_variable_set(:@success, true) }
             failed_website = ParsedWebsite.allocate.tap { |p| p.instance_variable_set(:@success, false) }
 
-            ParsedWebsite.stub :new, ->(url:) do
+            ParsedWebsite.stub :new, lambda { |url:|
               url == 'http://example.com/success' ? successful_website : failed_website
-            end do
+            } do
               process = Process.new(websites: @websites)
 
               # Act

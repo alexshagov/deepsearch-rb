@@ -47,7 +47,7 @@ module Deepsearch
 
           def teardown
             Deepsearch.reset_configuration!
-          end          
+          end
 
           def test_cosine_similarity
             # Arrange
@@ -91,7 +91,7 @@ module Deepsearch
             # Arrange (in setup)
 
             # Act & Assert
-            assert_equal [], @similarity.find_relevant(@query, [])
+            assert_empty @similarity.find_relevant(@query, [])
           end
         end
       end

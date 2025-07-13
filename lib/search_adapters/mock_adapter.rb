@@ -9,7 +9,7 @@ module Deepsearch
       def initialize(api_key = nil); end
 
       def search(query, options = {})
-        return mock_results(query, options)
+        mock_results(query, options)
       end
 
       private
@@ -63,7 +63,8 @@ module Deepsearch
         }
 
         if include_answer
-          response["answer"] = "Ruby is a dynamic, open-source programming language with a focus on simplicity and productivity. It was created by Yukihiro Matsumoto in the mid-1990s and follows the principle that everything is an object. Ruby is particularly popular for web development, especially with the Ruby on Rails framework, but it's also used for automation, data processing, and various other applications."
+          response["answer"] =
+            "Ruby is a dynamic, open-source programming language with a focus on simplicity and productivity. It was created by Yukihiro Matsumoto in the mid-1990s and follows the principle that everything is an object. Ruby is particularly popular for web development, especially with the Ruby on Rails framework, but it's also used for automation, data processing, and various other applications."
         end
 
         response

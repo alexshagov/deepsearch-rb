@@ -55,8 +55,8 @@ module Deepsearch
             assert_match(/User Query: "What is Ruby\?"/, prompt)
             assert_match(/Source \[1\]:\nRuby is a dynamic language./, prompt)
             assert_match(/Source \[2\]:\nIt was created by Matz./, prompt)
-            assert_match(/\[1\]: http:\/\/example.com\/ruby/, prompt)
-            assert_match(/\[2\]: http:\/\/example.com\/matz/, prompt)
+            assert_match(%r{\[1\]: http://example.com/ruby}, prompt)
+            assert_match(%r{\[2\]: http://example.com/matz}, prompt)
           end
 
           def test_execute_handles_no_relevant_chunks

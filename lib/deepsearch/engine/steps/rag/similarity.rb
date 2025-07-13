@@ -24,10 +24,8 @@ module Deepsearch
             best_score = top_candidates.first.first
             cutoff_score = best_score * threshold
 
-            relevant_chunks = top_candidates.select { |score, _| score >= cutoff_score }
-                                            .map { |_, index| chunks[index] }
-
-            relevant_chunks
+            top_candidates.select { |score, _| score >= cutoff_score }
+                          .map { |_, index| chunks[index] }
           end
 
           private
@@ -51,6 +49,7 @@ module Deepsearch
             magnitude_b = Math.sqrt(vec_b.sum { |v| v**2 })
 
             return 0.0 if magnitude_a.zero? || magnitude_b.zero?
+
             dot_product / (magnitude_a * magnitude_b)
           end
         end

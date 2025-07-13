@@ -12,7 +12,7 @@ module Deepsearch
   # A generic error class for exceptions raised by the Deepsearch gem,
   # from which more specific errors can inherit.
   class Error < StandardError; end
-  
+
   class << self
     def configuration
       @configuration ||= Configuration.new

@@ -63,7 +63,9 @@ class DeepsearchIntegrationTest < Minitest::Test
     mock_search_adapter.expect :search, adapter_search_results_initial, [@query, {}]
     2.times do
       # For subqueries, we accept any string other than the main query.
-      mock_search_adapter.expect(:search, adapter_search_results_initial) { |q, o| q.is_a?(String) && q != @query && o == {} }
+      mock_search_adapter.expect(:search, adapter_search_results_initial) do |q, o|
+        q.is_a?(String) && q != @query && o == {}
+      end
     end
 
     # 5. Mock Net::HTTP for data aggregation to avoid live page fetching
@@ -115,7 +117,6 @@ class DeepsearchIntegrationTest < Minitest::Test
     mock_http_response1.verify
     mock_http2.verify
     mock_http_response2.verify
-
 
     assert result.success?
     assert_equal "Final summary about RoR. [1](https://rubyonrails.org)", result.summary

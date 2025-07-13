@@ -42,7 +42,7 @@ module Deepsearch
 
           def fetch_content!
             uri = URI.parse(@url)
-            
+
             unless %w[http https].include?(uri.scheme)
               @error = "Invalid URL scheme: #{uri.scheme}"
               return
@@ -65,7 +65,7 @@ module Deepsearch
             else
               @error = "HTTP #{response.code}"
             end
-          rescue => e
+          rescue StandardError => e
             @error = e.message
           end
 
@@ -111,7 +111,7 @@ module Deepsearch
           rescue StandardError
             # Fallback if Nokogiri fails. The raw_content is the problem. Sanitize it from binary to UTF-8.
             fallback_text = content.to_s.encode("UTF-8", "binary", invalid: :replace, undef: :replace, replace: "")
-            fallback_text.gsub(/<script\b[^>]*>.*?<\/script>/mi, "").gsub(/<style\b[^>]*>.*?<\/style>/mi, "").gsub(
+            fallback_text.gsub(%r{<script\b[^>]*>.*?</script>}mi, "").gsub(%r{<style\b[^>]*>.*?</style>}mi, "").gsub(
               /[[:space:]]+/, " "
             ).strip
           end

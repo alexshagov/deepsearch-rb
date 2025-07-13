@@ -9,7 +9,7 @@ module Deepsearch
           # This is the fundamental unit of data used in the RAG process.
           class Chunk
             attr_accessor :text, :embedding, :document_url
-      
+
             def initialize(text:, embedding: nil, document_url: nil)
               @text = text
               @embedding = embedding

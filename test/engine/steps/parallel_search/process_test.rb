@@ -8,10 +8,10 @@ module Deepsearch
   class Engine
     module Steps
       module ParallelSearch
-        class ProcessTest < Minitest::Test          
+        class ProcessTest < Minitest::Test
           def setup
             @initial_query = "test query"
-            @sub_queries = ["sub1", "sub2"]
+            @sub_queries = %w[sub1 sub2]
             @mock_adapter = Minitest::Mock.new
             @options = { max_results: 5 }
 

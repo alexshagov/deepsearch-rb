@@ -40,13 +40,11 @@ module Deepsearch
       private
 
       def validate_api_key!
-        if @api_key.nil? || @api_key.strip.empty?
-          raise TavilyError, "API key is required"
-        end
+        raise TavilyError, "API key is required" if @api_key.nil? || @api_key.strip.empty?
 
-        unless @api_key.start_with?('tvly-')
-          raise TavilyError, "Invalid API key format. Expected format: tvly-YOUR_API_KEY"
-        end
+        return if @api_key.start_with?('tvly-')
+
+        raise TavilyError, "Invalid API key format. Expected format: tvly-YOUR_API_KEY"
       end
 
       def build_payload(query, options)
@@ -78,9 +76,7 @@ module Deepsearch
 
         response = http.request(request)
 
-        unless response.is_a?(Net::HTTPSuccess)
-          handle_error_response(response)
-        end
+        handle_error_response(response) unless response.is_a?(Net::HTTPSuccess)
 
         response
       end
