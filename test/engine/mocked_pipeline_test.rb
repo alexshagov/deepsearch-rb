@@ -35,7 +35,9 @@ module Deepsearch
 
         rag_result = nil
         RubyLLM.stub :chat, mock_llm_chat do
-          RubyLLM.stub(:embed, mock_embedding_result) { rag_result = build_rag_result(prepare_subqueries_result.cleaned_query) }
+          RubyLLM.stub(:embed, mock_embedding_result) do
+            rag_result = build_rag_result(prepare_subqueries_result.cleaned_query)
+          end
         end
 
         # 1c. Set mock expectations for each pipeline step process.
@@ -72,8 +74,10 @@ module Deepsearch
           error: "LLM not available"
         )
         mock_prepare_subqueries_process = Minitest::Mock.new
-        2.times { mock_prepare_subqueries_process.expect :execute, mock_prepare_subqueries_result } # Expect two calls because of retry logic
-
+        # Expect two calls because of retry logic
+        2.times do
+          mock_prepare_subqueries_process.expect :execute, mock_prepare_subqueries_result
+        end
         # Act & Assert
         Steps::PrepareSubqueries::Process.stub :new, ->(_query) { mock_prepare_subqueries_process } do
           exception = assert_raises(RuntimeError) { @pipeline.execute(@query) }

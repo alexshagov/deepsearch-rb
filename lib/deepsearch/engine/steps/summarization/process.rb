@@ -36,18 +36,19 @@ module Deepsearch
           def build_summary_prompt
             chunks_by_url = relevant_chunks.group_by(&:document_url)
             citation_map = chunks_by_url.keys.each_with_index.to_h { |url, i| [url, i + 1] }
- 
+
             context_text = chunks_by_url.map do |url, chunks|
               citation_number = citation_map[url]
               chunk_contents = chunks.map(&:text).join("\n\n")
               "Source [#{citation_number}]:\n#{chunk_contents}"
             end.join("\n\n---\n\n")
- 
+
             sources_list = citation_map.map { |url, number| "[#{number}]: #{url}" }.join("\n")
-            Deepsearch.configuration.prompts.summarization_prompt(query: @query.text, context_text: context_text, sources_list: sources_list)
+            Deepsearch.configuration.prompts.summarization_prompt(query: @query.text, context_text: context_text,
+                                                                  sources_list: sources_list)
           end
         end
       end
     end
   end
-end          
+end

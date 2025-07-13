@@ -47,7 +47,8 @@ module Deepsearch
     #       end
     #     end
     #     Deepsearch.configure { |c| c.listener = MyListener.new
-    attr_accessor :tavily_api_key, :serper_api_key, :search_adapter, :custom_search_adapter_class, :logger, :listener, :prompts
+    attr_accessor :tavily_api_key, :serper_api_key, :search_adapter, :custom_search_adapter_class, :logger, :listener,
+                  :prompts
     attr_reader :ruby_llm
 
     def initialize

@@ -42,7 +42,7 @@ module Deepsearch
             mock_similarity.expect :find_relevant, [chunk1, chunk3], [@mock_query, all_chunks]
 
             Chunker.stub :new, mock_chunker do
-              RubyLLM.stub :embed, ->(texts) {
+              RubyLLM.stub :embed, lambda { |texts|
                 assert_equal texts_to_embed, texts
                 mock_embedding
               } do
@@ -73,7 +73,7 @@ module Deepsearch
           def test_execute_limits_chunks_per_website
             # Arrange
 
-            long_content = "This content is long and will be chunked many times."            
+            long_content = "This content is long and will be chunked many times."
             short_content = "Short content."
             parsed_websites = [
               OpenStruct.new(url: "http://long.com", content: long_content),
@@ -96,10 +96,12 @@ module Deepsearch
             mock_embedding.expect(:vectors, Array.new(expected_chunk_count_for_embedding) { [0.1] })
 
             mock_similarity = Minitest::Mock.new
-            mock_similarity.expect(:find_relevant, [], [@mock_query, ->(chunks) { chunks.size == expected_chunk_count_for_embedding }])
+            mock_similarity.expect(:find_relevant, [], [@mock_query, lambda { |chunks|
+              chunks.size == expected_chunk_count_for_embedding
+            }])
 
             Chunker.stub :new, mock_chunker do
-              RubyLLM.stub(:embed, ->(texts) {
+              RubyLLM.stub(:embed, lambda { |texts|
                 assert_equal expected_chunk_count_for_embedding, texts.size
                 mock_embedding
               }) do
