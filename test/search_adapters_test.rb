@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require_relative "test_helper"
+require_relative 'test_helper'
 
 class SearchAdaptersTest < Minitest::Test
   def test_creates_tavily_adapter
-    adapter = Deepsearch::SearchAdapters.create(:tavily, "tvly-test_key")
+    adapter = Deepsearch::SearchAdapters.create(:tavily, 'tvly-test_key')
     assert_instance_of Deepsearch::SearchAdapters::TavilyAdapter, adapter
   end
 
   def test_creates_serper_adapter
-    adapter = Deepsearch::SearchAdapters.create(:serper, "serper-test_key")
+    adapter = Deepsearch::SearchAdapters.create(:serper, 'serper-test_key')
     assert_instance_of Deepsearch::SearchAdapters::SerperAdapter, adapter
   end
 

@@ -21,7 +21,7 @@ module Deepsearch
       # @return [Hash] Parsed and transformed response from Serper API
       # @raise [SerperError] If the API request fails
       def search(query, options = {})
-        raise ArgumentError, "Query cannot be empty" if query.nil? || query.strip.empty?
+        raise ArgumentError, 'Query cannot be empty' if query.nil? || query.strip.empty?
 
         payload = build_payload(query, options)
         response = make_request(payload)
@@ -36,7 +36,7 @@ module Deepsearch
       private
 
       def validate_api_key!
-        raise SerperError, "API key is required" if @api_key.nil? || @api_key.strip.empty?
+        raise SerperError, 'API key is required' if @api_key.nil? || @api_key.strip.empty?
       end
 
       def build_payload(query, options)
@@ -91,7 +91,7 @@ module Deepsearch
         when 401, 402
           raise SerperError, "Unauthorized or payment required: #{response.body}"
         when 429
-          raise SerperError, "Rate limit exceeded"
+          raise SerperError, 'Rate limit exceeded'
         when 500..599
           raise SerperError, "Server error: #{response.code}"
         else

@@ -26,7 +26,7 @@ module Deepsearch
       # @return [Hash] Parsed response from Tavily API
       # @raise [TavilyError] If the API request fails
       def search(query, options = {})
-        raise ArgumentError, "Query cannot be empty" if query.nil? || query.strip.empty?
+        raise ArgumentError, 'Query cannot be empty' if query.nil? || query.strip.empty?
 
         payload = build_payload(query, options)
         response = make_request(payload)
@@ -40,13 +40,11 @@ module Deepsearch
       private
 
       def validate_api_key!
-        if @api_key.nil? || @api_key.strip.empty?
-          raise TavilyError, "API key is required"
-        end
+        raise TavilyError, 'API key is required' if @api_key.nil? || @api_key.strip.empty?
 
-        unless @api_key.start_with?('tvly-')
-          raise TavilyError, "Invalid API key format. Expected format: tvly-YOUR_API_KEY"
-        end
+        return if @api_key.start_with?('tvly-')
+
+        raise TavilyError, 'Invalid API key format. Expected format: tvly-YOUR_API_KEY'
       end
 
       def build_payload(query, options)
@@ -78,9 +76,7 @@ module Deepsearch
 
         response = http.request(request)
 
-        unless response.is_a?(Net::HTTPSuccess)
-          handle_error_response(response)
-        end
+        handle_error_response(response) unless response.is_a?(Net::HTTPSuccess)
 
         response
       end
@@ -96,9 +92,9 @@ module Deepsearch
         when 400
           raise TavilyError, "Bad request: #{response.body}"
         when 401
-          raise TavilyError, "Unauthorized: Invalid API key"
+          raise TavilyError, 'Unauthorized: Invalid API key'
         when 429
-          raise TavilyError, "Rate limit exceeded"
+          raise TavilyError, 'Rate limit exceeded'
         when 500..599
           raise TavilyError, "Server error: #{response.code}"
         else

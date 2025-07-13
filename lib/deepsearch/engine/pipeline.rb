@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "steps/prepare_subqueries/process"
-require_relative "steps/parallel_search/process"
-require_relative "steps/data_aggregation/process"
-require_relative "steps/rag/process"
-require_relative "steps/summarization/process"
+require_relative 'steps/prepare_subqueries/process'
+require_relative 'steps/parallel_search/process'
+require_relative 'steps/data_aggregation/process'
+require_relative 'steps/rag/process'
+require_relative 'steps/summarization/process'
 
 module Deepsearch
   class Engine
@@ -31,7 +31,6 @@ module Deepsearch
         #   - original_query [String] The unmodified input query
         #   - sub_queries [Array<String>] Generated subqueries (empty array on error)
         #   - error [String, nil] Error message if processing failed
-        
 
         parallel_search_options = {
           initial_query: query_preprocessing_result.cleaned_query,
@@ -42,7 +41,7 @@ module Deepsearch
 
         parallel_search_result = with_retry { Steps::ParallelSearch::Process.new(**parallel_search_options).execute }
         notify_listener(:step_completed, step: :parallel_search, result: parallel_search_result)
-        # [parallel_search_result] Contains:        
+        # [parallel_search_result] Contains:
         #   - websites [Array<ParallelSearch::Result>] Search results
         #     - ParallelSearch::Result objects with:
         #       - websites [Array<Hash#url>] Array of website URLs
@@ -51,18 +50,18 @@ module Deepsearch
 
         data_aggregation_result = with_retry do
           Steps::DataAggregation::Process.new(
-            websites: parallel_search_result.websites,
+            websites: parallel_search_result.websites
           ).execute
         end
         notify_listener(:step_completed, step: :data_aggregation, result: data_aggregation_result)
-        # [data_aggregation_result] Contains:        
+        # [data_aggregation_result] Contains:
         #   - parsed_websites [Array<DataAggregation::Result>]
         #     - DataAggregation::Result objects with:
         #       - url [String] Website URL
         #       - content [String] Parsed content from the website
         #   - success [Boolean] Whether search succeeded
         #   - error [String, nil] Error message if search failed
-        
+
         rag_result = with_retry do
           Steps::Rag::Process.new(
             query: query_preprocessing_result.cleaned_query,
@@ -92,8 +91,8 @@ module Deepsearch
 
       def notify_listener(event, **payload)
         listener = Deepsearch.configuration.listener
-        if !listener.respond_to?(:on_deepsearch_event)
-          Deepsearch.configuration.logger.debug("Attached listener does not respond to on_deepsearch_event, skipping notification")
+        unless listener.respond_to?(:on_deepsearch_event)
+          Deepsearch.configuration.logger.debug('Attached listener does not respond to on_deepsearch_event, skipping notification')
           return
         end
 
@@ -110,15 +109,13 @@ module Deepsearch
           result = block.call
           # Handle "soft" failures from steps that return a result object with a #failure? method
           raise "Operation failed: #{result.error}" if result.respond_to?(:failure?) && result.failure?
-      
+
           result
-        rescue => e          
-          if (retries += 1) <= 1
-            Deepsearch.configuration.logger.debug("Retrying after error: #{e.message}")
-            retry
-          else
-            raise e
-          end
+        rescue StandardError => e
+          raise e unless (retries += 1) <= 1
+
+          Deepsearch.configuration.logger.debug("Retrying after error: #{e.message}")
+          retry
         end
       end
     end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "engine/pipeline"
+require_relative 'engine/pipeline'
 
 module Deepsearch
   # The main entry point for performing a deep search.

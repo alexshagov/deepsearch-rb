@@ -14,9 +14,9 @@ module Deepsearch
           attr_reader :initial_query, :sub_queries, :search_adapter, :options
 
           def initialize(initial_query:,
-            sub_queries:,
-            search_adapter:,
-            **options)
+                         sub_queries:,
+                         search_adapter:,
+                         **options)
             @initial_query = initial_query
             @sub_queries = sub_queries
             @search_adapter = search_adapter

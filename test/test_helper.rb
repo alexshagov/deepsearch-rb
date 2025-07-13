@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
-require "deepsearch"
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
+require 'deepsearch'
 
-require "stringio"
-require "minitest/autorun"
-require "minitest/mock"
+require 'stringio'
+require 'minitest/autorun'
+require 'minitest/mock'
 
-require_relative "support/llm_mock"
+require_relative 'support/llm_mock'
 
 class Minitest::Test
   def before_setup

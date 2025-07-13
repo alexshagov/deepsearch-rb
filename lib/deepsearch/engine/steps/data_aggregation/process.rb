@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "async"
-require "async/semaphore"
-require_relative "parsed_website"
-require_relative "result"
+require 'async'
+require 'async/semaphore'
+require_relative 'parsed_website'
+require_relative 'result'
 
 module Deepsearch
   class Engine

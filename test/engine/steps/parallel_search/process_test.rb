@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-require_relative "../../../test_helper"
-require "deepsearch/engine/steps/parallel_search/process"
-require "deepsearch/engine/steps/parallel_search/search"
+require_relative '../../../test_helper'
+require 'deepsearch/engine/steps/parallel_search/process'
+require 'deepsearch/engine/steps/parallel_search/search'
 
 module Deepsearch
   class Engine
     module Steps
       module ParallelSearch
-        class ProcessTest < Minitest::Test          
+        class ProcessTest < Minitest::Test
           def setup
-            @initial_query = "test query"
-            @sub_queries = ["sub1", "sub2"]
+            @initial_query = 'test query'
+            @sub_queries = %w[sub1 sub2]
             @mock_adapter = Minitest::Mock.new
             @options = { max_results: 5 }
 
@@ -58,14 +58,14 @@ module Deepsearch
 
           def test_execute_handles_errors
             # Arrange
-            Search.stub :new, ->(*) { raise StandardError, "Search failed" } do
+            Search.stub :new, ->(*) { raise StandardError, 'Search failed' } do
               # Act
               result = @process.execute
 
               # Assert
               refute result.success?
               assert_empty result.websites
-              assert_equal "Search failed", result.error
+              assert_equal 'Search failed', result.error
             end
           end
         end

@@ -1,4 +1,4 @@
-require_relative "../lib/deepsearch"
+require_relative '../lib/deepsearch'
 
 Deepsearch.configure do |config|
   # Using gemini
@@ -10,7 +10,7 @@ Deepsearch.configure do |config|
   config.search_adapter = :serper
 end
 
-result = Deepsearch.search("Recent open source LLM news (may-july 2025)", max_total_search_results: 25)
-puts "Search result:"
-puts "=" * 50
+result = Deepsearch.search('Recent open source LLM news (may-july 2025)', max_total_search_results: 25)
+puts 'Search result:'
+puts '=' * 50
 puts result.summary

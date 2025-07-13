@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative "../../../test_helper"
-require "deepsearch/engine/steps/rag/similarity"
-require "deepsearch/engine/steps/rag/values/query"
-require "deepsearch/engine/steps/rag/values/chunk"
+require_relative '../../../test_helper'
+require 'deepsearch/engine/steps/rag/similarity'
+require 'deepsearch/engine/steps/rag/values/query'
+require 'deepsearch/engine/steps/rag/values/chunk'
 
 module Deepsearch
   class Engine
@@ -12,10 +12,10 @@ module Deepsearch
         class SimilarityTest < Minitest::Test
           def setup
             @similarity = Similarity.new
-            @query_text = "test query"
+            @query_text = 'test query'
 
             mock_llm_chat = Minitest::Mock.new
-            enrichment_response = OpenStruct.new(content: "test,query,tags")
+            enrichment_response = OpenStruct.new(content: 'test,query,tags')
             mock_llm_chat.expect :ask, enrichment_response, [String]
 
             # Mock RubyLLM.embed behavior for Query object creation
@@ -27,19 +27,19 @@ module Deepsearch
               end
             end
 
-            @chunk1 = Values::Chunk.new(text: "perfect match", document_url: "url1")
+            @chunk1 = Values::Chunk.new(text: 'perfect match', document_url: 'url1')
             @chunk1.embedding = [1.0, 0.0, 0.0] # score 1.0
 
-            @chunk2 = Values::Chunk.new(text: "very close match", document_url: "url2")
+            @chunk2 = Values::Chunk.new(text: 'very close match', document_url: 'url2')
             @chunk2.embedding = [0.95, 0.1, 0.0] # score ~0.99
 
-            @chunk3 = Values::Chunk.new(text: "close match", document_url: "url3")
+            @chunk3 = Values::Chunk.new(text: 'close match', document_url: 'url3')
             @chunk3.embedding = [0.9, 0.3, 0.1] # score ~0.94
 
-            @chunk4 = Values::Chunk.new(text: "somewhat relevant", document_url: "url4")
+            @chunk4 = Values::Chunk.new(text: 'somewhat relevant', document_url: 'url4')
             @chunk4.embedding = [0.8, 0.5, 0.3] # score ~0.8
 
-            @chunk5 = Values::Chunk.new(text: "irrelevant", document_url: "url5")
+            @chunk5 = Values::Chunk.new(text: 'irrelevant', document_url: 'url5')
             @chunk5.embedding = [0.0, 1.0, 0.0] # score 0.0
 
             @all_chunks = [@chunk1, @chunk2, @chunk3, @chunk4, @chunk5]
@@ -47,7 +47,7 @@ module Deepsearch
 
           def teardown
             Deepsearch.reset_configuration!
-          end          
+          end
 
           def test_cosine_similarity
             # Arrange
@@ -91,7 +91,7 @@ module Deepsearch
             # Arrange (in setup)
 
             # Act & Assert
-            assert_equal [], @similarity.find_relevant(@query, [])
+            assert_empty @similarity.find_relevant(@query, [])
           end
         end
       end

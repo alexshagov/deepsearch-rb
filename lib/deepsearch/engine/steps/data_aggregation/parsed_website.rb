@@ -42,7 +42,7 @@ module Deepsearch
 
           def fetch_content!
             uri = URI.parse(@url)
-            
+
             unless %w[http https].include?(uri.scheme)
               @error = "Invalid URL scheme: #{uri.scheme}"
               return
@@ -65,7 +65,7 @@ module Deepsearch
             else
               @error = "HTTP #{response.code}"
             end
-          rescue => e
+          rescue StandardError => e
             @error = e.message
           end
 
@@ -84,7 +84,7 @@ module Deepsearch
             raw_content = content.to_s
             # If not HTML, we still need to make sure it's valid UTF-8 for JSON serialization.
             unless raw_content =~ /<html[\s>]|<!DOCTYPE html/i
-              return raw_content.encode("UTF-8", "binary", invalid: :replace, undef: :replace, replace: "")
+              return raw_content.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
             end
 
             # Let Nokogiri parse the raw bytes and detect encoding
@@ -106,13 +106,13 @@ module Deepsearch
 
             # Get text content and clean it up
             text = (doc.at('body')&.text || doc.text).to_s
-            utf8_text = text.encode("UTF-8", invalid: :replace, undef: :replace, replace: "")
-            utf8_text.gsub(/[[:space:]]+/, " ").strip
+            utf8_text = text.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+            utf8_text.gsub(/[[:space:]]+/, ' ').strip
           rescue StandardError
             # Fallback if Nokogiri fails. The raw_content is the problem. Sanitize it from binary to UTF-8.
-            fallback_text = content.to_s.encode("UTF-8", "binary", invalid: :replace, undef: :replace, replace: "")
-            fallback_text.gsub(/<script\b[^>]*>.*?<\/script>/mi, "").gsub(/<style\b[^>]*>.*?<\/style>/mi, "").gsub(
-              /[[:space:]]+/, " "
+            fallback_text = content.to_s.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+            fallback_text.gsub(%r{<script\b[^>]*>.*?</script>}mi, '').gsub(%r{<style\b[^>]*>.*?</style>}mi, '').gsub(
+              /[[:space:]]+/, ' '
             ).strip
           end
         end

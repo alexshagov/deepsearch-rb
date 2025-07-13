@@ -12,7 +12,7 @@ module Deepsearch
             attr_reader :text, :embedding
 
             def initialize(text:)
-              raise ArgumentError, "Query text cannot be blank" if text.to_s.strip.empty?
+              raise ArgumentError, 'Query text cannot be blank' if text.to_s.strip.empty?
 
               @text = text
               enriched_text = enrich_query_with_tags(text)
@@ -24,7 +24,7 @@ module Deepsearch
             def enrich_query_with_tags(original_text)
               prompt = Deepsearch.configuration.prompts.enrich_query_prompt(query: original_text)
 
-              Deepsearch.configuration.logger.debug("Enriching query with LLM-generated tags...")
+              Deepsearch.configuration.logger.debug('Enriching query with LLM-generated tags...')
               response = RubyLLM.chat.ask(prompt)
               tags_list = response.content.strip
               Deepsearch.configuration.logger.debug("Generated tags for query enrichment: #{tags_list}")

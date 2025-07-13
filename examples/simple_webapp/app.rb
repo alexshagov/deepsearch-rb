@@ -28,7 +28,7 @@ class WebSocketListener
 
   def on_deepsearch_event(_event, **payload)
     return unless @ws
-    
+
     step_result = payload[:result]
     message = { type: 'event', step: payload[:step].to_s }
 
@@ -47,13 +47,13 @@ class WebSocketListener
                 count = step_result.relevant_chunks&.count || 0
                 "Found #{count} relevant text chunks for the query."
               when :summarization
-                "Generating final summary..."
+                'Generating final summary...'
               end
 
     if payload[:step] == :summarization && step_result.success?
       message[:type] = 'final_result'
       message[:summary] = step_result.summary
-      message[:details] = "Summary generation complete."
+      message[:details] = 'Summary generation complete.'
     else
       message[:details] = details
     end
@@ -80,28 +80,26 @@ get '/ws' do
 
       ws.onmessage do |msg|
         puts "Received WebSocket message at #{Time.now}: #{msg}"
-        
-        Thread.new do
-          begin
-            data = JSON.parse(msg)
-            query = data['query']
-            puts "Parsed query: #{query}"
 
-            if query.to_s.strip.empty?
-              ws.send({ type: 'error', message: 'Query cannot be empty.' }.to_json)
-            else
-              listener = WebSocketListener.new(ws)
-              Deepsearch.configuration.listener = listener
-              
-              puts "Starting Deepsearch for query: #{query}"
-              Deepsearch.search(query, max_total_search_results: 15)
-              puts "Deepsearch completed for query: #{query}"
-            end
-          rescue JSON::ParserError => e
-            ws.send({ type: 'error', message: 'Invalid request from client.' }.to_json)
-          rescue StandardError => e
-            ws.send({ type: 'error', message: "An unexpected error occurred: #{e.message}" }.to_json)
+        Thread.new do
+          data = JSON.parse(msg)
+          query = data['query']
+          puts "Parsed query: #{query}"
+
+          if query.to_s.strip.empty?
+            ws.send({ type: 'error', message: 'Query cannot be empty.' }.to_json)
+          else
+            listener = WebSocketListener.new(ws)
+            Deepsearch.configuration.listener = listener
+
+            puts "Starting Deepsearch for query: #{query}"
+            Deepsearch.search(query, max_total_search_results: 15)
+            puts "Deepsearch completed for query: #{query}"
           end
+        rescue JSON::ParserError
+          ws.send({ type: 'error', message: 'Invalid request from client.' }.to_json)
+        rescue StandardError => e
+          ws.send({ type: 'error', message: "An unexpected error occurred: #{e.message}" }.to_json)
         end
       end
 

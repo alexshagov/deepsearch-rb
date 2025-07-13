@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "../../../test_helper"
-require "deepsearch/engine/steps/data_aggregation/process"
-require "deepsearch/engine/steps/data_aggregation/parsed_website"
+require_relative '../../../test_helper'
+require 'deepsearch/engine/steps/data_aggregation/process'
+require 'deepsearch/engine/steps/data_aggregation/parsed_website'
 
 module Deepsearch
   class Engine
@@ -21,9 +21,9 @@ module Deepsearch
             successful_website = ParsedWebsite.allocate.tap { |p| p.instance_variable_set(:@success, true) }
             failed_website = ParsedWebsite.allocate.tap { |p| p.instance_variable_set(:@success, false) }
 
-            ParsedWebsite.stub :new, ->(url:) do
+            ParsedWebsite.stub :new, lambda { |url:|
               url == 'http://example.com/success' ? successful_website : failed_website
-            end do
+            } do
               process = Process.new(websites: @websites)
 
               # Act

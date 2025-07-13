@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "prompts_config"
+require_relative 'prompts_config'
 
 module Deepsearch
   # Encapsulates configuration options for the underlying `ruby_llm` gem.
@@ -28,8 +28,8 @@ module Deepsearch
 
     def initialize
       # Set some sensible defaults for Deepsearch's use case
-      @default_model = "gpt-4o-mini"
-      @default_embedding_model = "text-embedding-3-small"
+      @default_model = 'gpt-4o-mini'
+      @default_embedding_model = 'text-embedding-3-small'
       @request_timeout = 30 # seconds
       @log_assume_model_exists = false
     end
@@ -47,7 +47,8 @@ module Deepsearch
     #       end
     #     end
     #     Deepsearch.configure { |c| c.listener = MyListener.new
-    attr_accessor :tavily_api_key, :serper_api_key, :search_adapter, :custom_search_adapter_class, :logger, :listener, :prompts
+    attr_accessor :tavily_api_key, :serper_api_key, :search_adapter, :custom_search_adapter_class, :logger, :listener,
+                  :prompts
     attr_reader :ruby_llm
 
     def initialize
@@ -74,7 +75,7 @@ module Deepsearch
 
     # Configure RubyLLM with current settings from the `ruby_llm` config object.
     def configure_llm!
-      require "ruby_llm"
+      require 'ruby_llm'
 
       RubyLLM.configure do |config|
         RubyLLMConfig::SUPPORTED_ATTRIBUTES.each do |attr|

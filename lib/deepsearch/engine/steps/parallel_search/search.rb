@@ -44,11 +44,11 @@ module Deepsearch
 
             Sync do |task|
               semaphore = Async::Semaphore.new(MAX_CONCURRENCY, parent: task)
-              
+
               tasks = @all_queries.each_with_index.map do |query, index|
                 # Add a small delay for subsequent tasks to avoid overwhelming the search api
                 sleep(1) if index > 0
-                
+
                 semaphore.async do |sub_task|
                   sub_task.annotate("query ##{index + 1}: #{query}")
                   perform_search_with_retries(query, index + 1)
@@ -62,15 +62,14 @@ module Deepsearch
           def perform_search_with_retries(query, query_number)
             (MAX_RETRIES + 1).times do |attempt|
               @logger.debug("Task #{query_number}: Searching '#{query}' (Attempt #{attempt + 1})")
-              
+
               results = @search_adapter.search(query, @search_options)
               extracted = extract_results(results)
               @logger.debug("✓ Task #{query_number} completed with #{extracted.size} results for '#{query}'")
               return extracted
-
             rescue StandardError => e
               @logger.debug("✗ Task #{query_number} error for '#{query}': #{e.message}")
-              
+
               break if attempt >= MAX_RETRIES
 
               sleep_duration = (INITIAL_BACKOFF * (2**attempt)) + rand(0.1..0.5)
