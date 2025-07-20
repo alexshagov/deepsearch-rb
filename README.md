@@ -13,14 +13,8 @@ The only runtime dependencies are [ruby_llm](https://github.com/crmne/ruby_llm?t
 
 ---
 
-**NOTE**: You can implement your own chains in the way it works for you, BFS/DFS search on any topic. A draft code might look like: 
-
-```
-Deepsearch.search(initial search) -> 
-  LLM(Generate additional queries) ->
-    Async [for each additional query]{ Deepsearch.search(sub-query) } ->
-      Aggregate()
-```
+**NOTE**: You can also implement your own chains in the way it works for you, BFS/DFS search on any topic.
+See the draft implementation of multi-chain flow in `examples/multi-step-chain/script.rb`
 
 ## Installation
 
