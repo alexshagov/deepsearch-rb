@@ -1,0 +1,7 @@
+source 'https://rubygems.org'
+
+gem 'tty-tree'
+gem 'pastel'
+gem 'fileutils'
+
+gem 'deepsearch-rb', path: '../../'
