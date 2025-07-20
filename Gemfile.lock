@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    deepsearch-rb (0.1.0)
+    deepsearch-rb (0.1.1)
       async (>= 2.0)
       nokogiri (>= 1.10)
       ruby_llm (~> 1.0)
