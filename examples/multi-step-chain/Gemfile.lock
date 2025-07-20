@@ -74,7 +74,6 @@ GEM
       zeitwerk (~> 2)
     traces (0.15.2)
     tty-color (0.6.0)
-    tty-tree (0.4.0)
     uri (1.0.3)
     zeitwerk (2.7.3)
 
@@ -92,7 +91,6 @@ DEPENDENCIES
   deepsearch-rb!
   fileutils
   pastel
-  tty-tree
 
 BUNDLED WITH
    2.6.9
