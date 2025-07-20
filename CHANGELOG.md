@@ -1,11 +1,12 @@
 # Changelog
 
-## [Pending]
+## [Released]
 
-## [0.1.1] - 2025-07-12
+## [0.1.1] - 2025-07-20
 
 ### Added
-- Minor specs improvements and examples cleanup
+- Calls to embedding API are now executed async
+- Added multi-step-chain example
 
 ## [Released]
 
