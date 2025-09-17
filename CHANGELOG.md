@@ -2,6 +2,13 @@
 
 ## [Released]
 
+## [0.1.2] - 2025-09-17
+
+### Fixed
+- Fixed compatibility with a new version of RubyLLM 
+
+## [Released]
+
 ## [0.1.1] - 2025-07-20
 
 ### Added
