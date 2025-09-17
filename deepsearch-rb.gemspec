@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   # Runtime dependencies
   spec.add_dependency "nokogiri", ">= 1.10"
   spec.add_dependency "async", ">= 2.0"
-  spec.add_dependency "ruby_llm", "~> 1.0"
+  spec.add_dependency "ruby_llm", ">= 1.6"
 
   # Development dependencies
   spec.add_development_dependency "bundler", ">= 2.0"
